@@ -13,6 +13,8 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import tn.studio.myapplication.screen.TeamCreationRoute
 import tn.studio.myapplication.screen.TeamCreationScreen
+import tn.studio.myapplication.screen.TeamResultRoute
+import tn.studio.myapplication.screen.TeamResultScreen
 import tn.studio.myapplication.screen.TeamScoringRoute
 import tn.studio.myapplication.screen.TeamScoringScreen
 import tn.studio.myapplication.ui.theme.MyApplicationTheme
@@ -42,7 +44,13 @@ class MainActivity : ComponentActivity() {
                                     padding = padding,
                                     teamOneName = value.teamOneName,
                                     teamTwoName = value.teamTwoName
-                                )
+                                ){
+                                    backStack.add(TeamResultRoute)
+                                }
+                            }
+
+                            entry<TeamResultRoute> {
+                                TeamResultScreen()
                             }
                         }
                     )

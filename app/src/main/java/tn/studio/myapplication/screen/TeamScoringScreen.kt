@@ -22,9 +22,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.NavKey
+import androidx.room.Room
 import tn.studio.myapplication.composables.TeamScoreCard
+import tn.studio.myapplication.data.ResultDatabase
+import tn.studio.myapplication.data.TeamResultDTO
 
 data class TeamScoringRoute(
     val teamOneName: String,
@@ -36,6 +40,7 @@ fun TeamScoringScreen(
     teamOneName: String,
     teamTwoName: String,
     padding: PaddingValues,
+    onPartyOver: () -> Unit
 ) {
     val orientation = LocalConfiguration.current.orientation
     var scoreTeamOne by remember { mutableIntStateOf(0) }
@@ -45,6 +50,29 @@ fun TeamScoringScreen(
             Column(
                 modifier = Modifier.fillMaxSize()
             ) {
+
+                val context = LocalContext.current
+
+                if (scoreTeamOne >= 15 || scoreTeamTwo >= 15) {
+                    val db = Room.databaseBuilder(
+                        context = context.applicationContext,
+                        klass = ResultDatabase::class.java,
+                        name = "result_db"
+                    ).build()
+
+                    db.resultDao().insertResult(
+                        TeamResultDTO(
+                            id = System.currentTimeMillis(),
+                            teamOneName = teamOneName,
+                            teamTwoName = teamTwoName,
+                            teamOneScore = scoreTeamOne,
+                            teamTwoScore = scoreTeamTwo
+                        )
+                    )
+
+                    onPartyOver()
+                }
+
                 TeamScoreCard(
                     teamName = teamOneName,
                     score = scoreTeamOne,
